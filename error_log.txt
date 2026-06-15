@@ -1,0 +1,12 @@
+step 1: config... OK (0.0s)
+step 2: llm.provider... OK (0.4s)
+step 3: rag.embedding... OK (0.0s)
+step 4: numpy... OK (0.0s)
+step 5: rag.retriever... OK (0.0s)
+step 6: llm.prompts... OK (0.0s)
+step 7: db.models... OK (0.0s)
+step 8: routes.chat... OK (0.2s)
+step 9: routes.admin... OK (0.0s)
+step 10: main app... OK (0.0s)
+
+ALL IMPORTS OK
