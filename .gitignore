@@ -1,0 +1,27 @@
+# 数据库文件
+rice-qa.db
+
+# 向量数据
+data/chroma_db/
+*.npy
+
+# 临时日志
+error_log.txt
+numpy_*.txt
+
+# 诊断/测试脚本
+diagnose.py
+final_test.py
+step1.py
+step2.py
+step3.py
+run_server.py
+
+# 其他临时测试
+test_*.py
+
+# Python 缓存
+__pycache__/
+
+# IDE 配置
+.vscode/
