@@ -9,16 +9,11 @@ data/chroma_db/
 error_log.txt
 numpy_*.txt
 
-# 诊断/测试脚本
-diagnose.py
-final_test.py
-step1.py
-step2.py
-step3.py
-run_server.py
+# 测试脚本
+backend/tests/
 
-# 其他临时测试
-test_*.py
+# 临时启动脚本
+run_server.py
 
 # Python 缓存
 __pycache__/
