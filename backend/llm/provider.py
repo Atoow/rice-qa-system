@@ -21,9 +21,25 @@ class OllamaProvider(LLMProvider):
         self.model = model
 
     async def generate(self, messages: list[dict]) -> str:
-        response = await self.client.chat(
-            model=self.model,
-            messages=messages,
-            options={"temperature": 0.3}
-        )
-        return response["message"]["content"]
+        """调用 Ollama 生成回答，空响应时自动重试一次。"""
+        prompt_len = sum(len(m.get("content", "")) for m in messages)
+
+        for attempt in range(2):
+            response = await self.client.chat(
+                model=self.model,
+                messages=messages,
+                options={
+                    "temperature": 0.3 if attempt == 0 else 0.5,
+                    "num_predict": 512,       # 强制至少尝试生成
+                    "repeat_penalty": 1.05,   # 避免重复输出
+                },
+            )
+            content = response.get("message", {}).get("content", "")
+            if content and content.strip():
+                return content
+
+            print(f"[Ollama] 警告：模型 {self.model} 返回空内容 "
+                  f"(attempt {attempt+1}/2, prompt {prompt_len} 字符)")
+
+        print(f"[Ollama] 错误：模型 {self.model} 连续 2 次返回空内容，放弃重试")
+        return ""

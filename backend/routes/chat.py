@@ -77,6 +77,16 @@ async def chat(req: ChatRequest):
     except Exception as e:
         raise HTTPException(502, f"模型调用失败: {str(e)}")
 
+    # 如果模型返回空内容，用兜底回答
+    if not answer or not answer.strip():
+        answer_lines = []
+        if chunks:
+            answer_lines.append("根据知识库相关内容，为您整理如下：\n")
+            for i, chunk in enumerate(chunks[:3], 1):
+                answer_lines.append(f"{i}. {chunk[:200]}...")
+            answer_lines.append("\n以上为知识库原始内容摘要，如需更详细解答，请尝试换个提问方式。")
+        answer = "\n".join(answer_lines) or "模型未能生成回答，请重试。"
+
     # 5. 保存对话记录
     save_conversation(req.session_id, "user", req.question)
     save_conversation(
