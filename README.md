@@ -2,7 +2,7 @@
 
 > 🚧 **当前为 MVP 版本** | 四川农业大学 2026 年本科生科研兴趣培养计划立项项目
 
-基于 RAG（检索增强生成）技术的水稻种植知识问答系统。农民输入自然语言问题，系统从专业知识库中语义检索相关内容，结合本地大语言模型生成准确、可追溯的种植建议。**完全离线运行，零外部 API 依赖。**
+基于 RAG（检索增强生成）技术的水稻种植知识问答系统。农民输入自然语言问题，系统从专业知识库中语义检索相关内容，结合本地大语言模型生成准确、可追溯的种植建议。**完全离线运行，零外部 API 依赖。知识库已收录 **6 份水稻种植技术文档**，共 **96 个向量化知识片段**。**
 
 ---
 
@@ -43,7 +43,7 @@ flowchart TB
     Loader --> Embedding
     Embedding --> Retriever
     Retriever --> Vectors
-    LLMProvider --> Ollama(["Ollama 本地推理\nqwen3.5:4b + RTX 4060"])
+    LLMProvider --> Ollama(["Ollama 本地推理\nqwen2.5:3b + RTX 4060"])
 ```
 
 **核心数据流**：
@@ -73,7 +73,7 @@ top_k_indices = np.argsort(similarities)[-self.top_k:][::-1]
 - 安全边界：明确拒绝农药配比、剂量建议等高风险问题
 
 ### 全离线部署
-模型通过 Ollama 本地加载（qwen3.5:4b, ~2.4GB），RTX 4060 8G GPU 推理，无需联网，端到端延迟 < 60 秒。
+模型通过 Ollama 本地加载（qwen2.5:3b, ~2.0GB），RTX 4060 8G GPU 推理，无需联网，端到端延迟 < 60 秒。
 
 ## 快速启动
 
@@ -92,7 +92,7 @@ pip install -r backend/requirements.txt
 
 # 2. 启动 Ollama 并拉取模型
 ollama serve
-ollama pull qwen3.5:4b
+ollama pull qwen2.5:3b
 ollama pull shaw/dmeta-embedding-zh
 
 # 3. 启动后端
@@ -141,7 +141,7 @@ uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
 
 ### `GET /admin/stats` — 统计查询
 ```json
-{ "total_chunks": 156, "files": ["水稻种植技术要点.txt", "水稻病虫害防治.pdf"] }
+{ "total_chunks": 96, "files": ["2025 五常市水稻种植技术规程.pdf", "水稻种植技术要点.txt", ...] }
 ```
 
 ## 项目结构
@@ -181,7 +181,7 @@ rice-qa-system/
 | 层级 | 技术选型 | 说明 |
 |------|---------|------|
 | 后端框架 | **FastAPI** | 异步原生，自动 Swagger 文档 |
-| LLM | **Ollama qwen3.5:4b** | 本地 GPU 推理，完全离线 |
+| LLM | **Ollama qwen2.5:3b** | 本地 GPU 推理，完全离线 |
 | Embedding | **shaw/dmeta-embedding-zh** | 中文语义向量化，768 维 |
 | 向量检索 | **自实现 numpy 引擎** | 余弦相似度 + Top-K，零 C 扩展依赖 |
 | 文档处理 | **LangChain Splitter + pypdf** | 支持 PDF/MD/TXT，可配置 chunk 大小 |
